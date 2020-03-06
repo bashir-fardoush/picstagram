@@ -1,0 +1,8 @@
+.settings
+**/bin
+**/target
+**/WebContent
+.classpath
+.project
+**/.idea
+.iml
