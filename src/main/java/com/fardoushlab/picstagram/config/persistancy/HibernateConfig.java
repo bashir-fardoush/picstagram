@@ -24,11 +24,11 @@ public class HibernateConfig {
 
     public Session getSession(){
 
-        try{
+       try{
             this.session = createAndGetLocalSessionFactoryBean().getCurrentSession();
 
         }catch(HibernateException e){
-            e.printStackTrace();
+           // e.printStackTrace();
             System.out.println("Opening new session...");
             this.session = createAndGetLocalSessionFactoryBean().openSession();
         }

@@ -5,6 +5,7 @@ import com.fardoushlab.picstagram.request_models.UserRM;
 import com.fardoushlab.picstagram.services.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,8 +31,14 @@ public class RootController {
     }
 
     @GetMapping("/index")
-    public String getHomePage(Model model){
+    public String getHomePage(Model model, Authentication authentication){
 
+        UserDto dto = userService.getUserDtoByName(authentication.getName());
+        UserRM userRM = new UserRM();
+        BeanUtils.copyProperties(dto, userRM);
+
+
+        model.addAttribute("user",userRM);
         model.addAttribute("message","Welcome to Home page");
         return "index";
     }
@@ -63,6 +70,7 @@ public class RootController {
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(user,userDto);
         userDto.setPassword(passwordEncoder.encode(user.getPassword()));
+        userDto.setAvatar("defaultavatar.jpg");
 
         long userId = userService.addUser(userDto);
 

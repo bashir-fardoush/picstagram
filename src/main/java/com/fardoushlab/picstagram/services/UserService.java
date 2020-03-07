@@ -13,12 +13,14 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -106,5 +108,79 @@ public class UserService implements UserDetailsService {
 
     }
 
+    public UserDto getUserDtoByName(String userName){
 
+        var session = config.getSession();
+        var transaction = session.getTransaction();
+
+        if (!transaction.isActive()){
+            transaction = session.beginTransaction();
+        }
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<User> userCriteriaQuery = cb.createQuery(User.class);
+        Root<User> root = userCriteriaQuery.from(User.class);
+
+        userCriteriaQuery.where(cb.equal(root.get("username"), userName));
+        var query = session.createQuery(userCriteriaQuery);
+
+        var userList = new ArrayList<User>();
+        try {
+            userList = (ArrayList<User>) query.getResultList();
+        }catch (HibernateException e){
+            e.printStackTrace();
+        }finally {
+            session.close();
+        }
+        var userDto = new UserDto();
+        if (userList.size() > 0){
+
+            BeanUtils.copyProperties(userList.get(0),userDto);
+        }else {
+            //throw new ResourceNotFoundException("No user found");
+        }
+
+        return userDto;
+    }
+
+
+    public void updateUserProfile(UserDto userDto) {
+
+
+        var session = config.getSession();
+        var transection = session.beginTransaction();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<User> userCriteriaQuery = cb.createQuery(User.class);
+        Root<User> root = userCriteriaQuery.from(User.class);
+
+        userCriteriaQuery.where(cb.equal(root.get("username"),userDto.getUsername()));
+
+        var query  = session.createQuery(userCriteriaQuery);
+        var user = new User();
+        try {
+            user = query.getSingleResult();
+        }catch (HibernateException e){
+
+            e.printStackTrace();
+        }
+
+        BeanUtils.copyProperties(userDto,user);
+        user.setUpdatedAt(LocalDateTime.now());
+
+        try {
+            session.update(user);
+            transection.commit();
+        }catch(HibernateException e) {
+
+            if(transection!= null ) {
+                transection.rollback();
+            }
+            e.printStackTrace();
+
+        }finally {
+            session.close();
+        }
+
+    }
 }

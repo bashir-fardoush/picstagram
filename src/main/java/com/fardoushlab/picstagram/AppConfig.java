@@ -6,6 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 
 @Configuration
@@ -13,6 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
         "com.fardoushlab.picstagram.config.persistancy",
         "com.fardoushlab.picstagram.config.security"})
 public class AppConfig {
+
+    @Bean
+    public StandardServletMultipartResolver multipartResolver(){
+        return new StandardServletMultipartResolver();
+    }
 
     @Bean
     HibernateConfig hibernateConfig(){
