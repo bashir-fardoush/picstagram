@@ -1,7 +1,9 @@
 package com.fardoushlab.picstagram.controllers;
 
 import com.fardoushlab.picstagram.dtos.UserDto;
+import com.fardoushlab.picstagram.models.Post;
 import com.fardoushlab.picstagram.request_models.UserRM;
+import com.fardoushlab.picstagram.services.PostService;
 import com.fardoushlab.picstagram.services.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 public class RootController {
 
@@ -22,6 +26,9 @@ public class RootController {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    PostService postService;
 
 
     @GetMapping("/")
@@ -37,9 +44,12 @@ public class RootController {
         UserRM userRM = new UserRM();
         BeanUtils.copyProperties(dto, userRM);
 
+        List<Post> allPost = postService.getAllPost();
 
         model.addAttribute("user",userRM);
-        model.addAttribute("message","Welcome to Home page");
+        model.addAttribute("post_list",allPost);
+
+
         return "index";
     }
 
@@ -79,6 +89,8 @@ public class RootController {
             model.addAttribute("user", user);
             return "redirect:/register";
         }
+
+
 
         model.addAttribute("message","Your account created successfully..");
         return "redirect:/login";

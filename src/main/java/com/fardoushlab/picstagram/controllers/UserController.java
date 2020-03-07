@@ -36,6 +36,7 @@ public class UserController {
 
         return "user/profile";
     }
+
     @GetMapping("/user/profile-edit")
     public String getProfileEditpage(Model model, Authentication authentication){
 

@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,6 +22,7 @@
             src="${pageContext.request.contextPath }/js/bootstrap.min.js"></script>
     <script type="text/javascript"
             src="${pageContext.request.contextPath }/js/jquery.js"></script>
+
 
 </head>
 <body>
@@ -52,9 +54,7 @@
                 <a class="nav-link" href="#">
             <li class="nav-item">
                 <a class="nav-link" href="${pageContext.request.contextPath}/post/write-post">
-
-                    <svg aria-label="Write post"  fill="#262626" height="22" viewBox="0 0 48 48" width="22"><path d="m256 0c-141.164062 0-256 114.835938-256 256s114.835938 256 256 256 256-114.835938 256-256-114.835938-256-256-256zm0 0" fill="#2196f3"/><path d="m368 277.332031h-90.667969v90.667969c0 11.777344-9.554687 21.332031-21.332031 21.332031s-21.332031-9.554687-21.332031-21.332031v-90.667969h-90.667969c-11.777344 0-21.332031-9.554687-21.332031-21.332031s9.554687-21.332031 21.332031-21.332031h90.667969v-90.667969c0-11.777344 9.554687-21.332031 21.332031-21.332031s21.332031 9.554687 21.332031 21.332031v90.667969h90.667969c11.777344 0 21.332031 9.554687 21.332031 21.332031s-9.554687 21.332031-21.332031 21.332031zm0 0" fill-rule="evenodd"/></svg>
-
+                  <svg aria-label="write post" fill="#262626" height="22" viewBox="0 0 48 48" width="22"><path clip-rule="evenodd" d="M47.5 46.1l-2.8-11c1.8-3.3 2.8-7.1 2.8-11.1C47.5 11 37 .5 24 .5S.5 11 .5 24 11 47.5 24 47.5c4 0 7.8-1 11.1-2.8l11 2.8c.8.2 1.6-.6 1.4-1.4zm-3-22.1c0 4-1 7-2.6 10-.2.4-.3.9-.2 1.4l2.1 8.4-8.3-2.1c-.5-.1-1-.1-1.4.2-1.8 1-5.2 2.6-10 2.6-11.4 0-20.6-9.2-20.6-20.5S12.7 3.5 24 3.5 44.5 12.7 44.5 24z" fill-rule="evenodd"></path></svg>
                 </a>
             </li>
             <li class="nav-item">
@@ -68,14 +68,79 @@
 </nav>
 
 <section class="content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-12">
+    <div class="container">
+
+        <c:forEach items="${post_list }" var="posts">
+
+
+            <div class="row">
+
+                <div class="card">
+
+                    <%--Post Woner info --%>
+
+                    <div class="row">
+                        <div class="col-lg-1 text-center">
+                            <img src="${pageContext.request.contextPath }/images/avatar/defaultavatar.jpg" alt="post image" width="20px" height="20px"/>
+                        </div>
+                        <div class="col-lg-11 float-left">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <p>${posts.user.fullName}</p>
+                                    </td>
+
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <%-- END Post Woner info --%>
+
+                    <%--post section--%>
+                    <div class="row">
+                        <c:forEach items="${posts.postImages}" var="postImage">
+                            <img class="card-img-top" src="${pageContext.request.contextPath }${postImage}" alt="post image"/>
+
+                        </c:forEach>
+                        <%--<img class="card-img-top" src="${pageContext.request.contextPath }/images/post_images/..." width="100px" height="100px" alt="post image">--%>
+                        <div class="card-body">
+                            <p class="card-text">${posts.postText}</p>
+                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        </div>
+                    </div>
+
+                    <%--post section END --%>
+
+                    <%--reaction row--%>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <a href="${pageContext.request.contextPath}/post/like"><img src="/images/avatar/defaultavatar.jpg" width="15dp" height="15dp"/></a>
+                        </div>
+                    </div>
+                    <%--reaction row END--%>
+
+                        <div class="row">
+                                <div class="col-sm-12">
+
+                                    <form:form action="${pageContext.request.contextPath}/post/comment" method="post">
+                                        <label for="comment">Comment:</label>
+                                        <textarea class="form-control" rows="1" id="comment"></textarea>
+                                        <input name="submit" type="submit" value="Submit"/>
+                                    </form:form>
+                                </div>
+                        </div>
+
+                </div> <%--card end--%>
+
 
             </div>
+
+            </br>
+
+        </c:forEach>
+
         </div>
 
-    </div>
 </section>
 
 </body>

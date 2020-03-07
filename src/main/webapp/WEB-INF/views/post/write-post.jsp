@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
     <title>write post</title>
@@ -28,28 +29,29 @@
 
             <div class="col-sm-12">
 
-                  <form:form action="${pageContext.request.contextPath}/user/write-post" method="post" modelAttribute="post" class="form-horizontal" role="form" enctype="multipart/form-data">
+                  <form:form action="${pageContext.request.contextPath}/post/write-post" method="post" modelAttribute="userpost" class="form-horizontal" role="form" enctype="multipart/form-data">
 
                       <div class="form-group">
                           <label class="col-lg-3 control-label">Bio:</label>
                           <div class="col-lg-8">
-                              <form:textarea path="bio" class="form-control" type="text" />
+                              <form:textarea path="postText" class="form-control" type="text" />
+
                           </div>
                       </div>
                       <div class="form-group">
-                          <div class="col-sm-12 text-center">
+                          <div class="col-lg-8 col-sm-12">
 
                               <h3>Select pictures..</h3>
-                              <input type="file" name="file" class="form-control">
+                              <input type="file" name="files" class="form-control" multiple>
                           </div>
                       </div>
 
                       <div class="form-group">
                           <label class="col-md-3 control-label"></label>
                           <div class="col-md-8">
-                              <input type="submit" class="btn btn-primary" value="Post">
+                              <input type="submit" class="btn btn-primary" value="Post"/>
                               <span></span>
-                              <input type="reset" class="btn btn-default" value="Cancel">
+                              <input type="reset" class="btn btn-default" value="Cancel"/>
                           </div>
                       </div>
 
