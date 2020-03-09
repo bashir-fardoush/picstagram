@@ -24,7 +24,7 @@ public class AppServletConfig  implements WebMvcConfigurer {
 
         registry.addResourceHandler("/images/**").addResourceLocations("/WEB-INF/resources/images/");
         registry.addResourceHandler("/font/**").addResourceLocations("/WEB-INF/resources/font/");
-        registry.addResourceHandler("/images/avatar/**").addResourceLocations("/WEB-INF/resources/images/avatar/");
+        registry.addResourceHandler("/images/avatar/**").addResourceLocations("file:///"+"D:/project/picstagram/avatar/");
         registry.addResourceHandler("/images/post_images/**").addResourceLocations("file:///"+"D:/project/picstagram/post_images/");
         registry.addResourceHandler("/css/**").addResourceLocations("/WEB-INF/resources/css/");
         registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/resources/js/");

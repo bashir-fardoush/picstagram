@@ -54,14 +54,14 @@ public class UserController {
     public String saveEditedprofile(Model model, @ModelAttribute(name = "user") UserRM userRM, @RequestParam(name = "file")MultipartFile multipartFile ){
 
         UserDto userDto = userService.getUserDtoByName(userRM.getUsername());
-        String pictureName = "ua"+userDto.getId()+".jpg";
+        String pictureName = System.currentTimeMillis() + ".jpg";
 
         if (!multipartFile.getOriginalFilename().isEmpty()) {
             System.out.println("File not Empty");
 
             try {
 
-                File directory = new File( servletContext.getRealPath("/WEB-INF/resources/images/avatar/") );
+                File directory = new File("D:/project/picstagram/avatar/");
 
 
                 if (!directory.exists()){
@@ -84,7 +84,7 @@ public class UserController {
                 outputStream.close();
 
            //     userService.updateuserProfilePicture(user.getName(),"/images/profile/"+pictureName);
-                userDto.setAvatar(pictureName);
+                userDto.setAvatar("/images/avatar/"+pictureName);
 
 
                 model.addAttribute("msg", "File uploaded successfully.");

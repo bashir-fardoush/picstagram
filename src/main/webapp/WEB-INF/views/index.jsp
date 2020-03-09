@@ -126,7 +126,7 @@
                             <div class="media m-0">
                                 <div class="d-flex mr-3">
                                     <a href=""><img class="img-fluid rounded-circle"
-                                                    src="${pageContext.request.contextPath }/images/avatar/defaultavatar.jpg"
+                                                    src="${pageContext.request.contextPath }${user.avatar}"
                                                     alt="User"></a>
                                 </div>
                                 <div class="media-body">
@@ -168,7 +168,7 @@
                         <div class="cardbox-comments">
 			  <span class="comment-avatar float-left">
 			   <a href=""><img class="rounded-circle"
-                               src="http://www.themashabrand.com/templates/bootsnipp/post/assets/img/users/6.jpg"
+                               src="${pageContext.request.contextPath}${user.avatar}"
                                alt="..."></a>
 			  </span>
                             <div class="search">
@@ -183,7 +183,7 @@
                                     <div class="media m-0">
                                         <div class="d-flex mr-3">
                                             <a href=""><img class="img-fluid rounded-circle"
-                                                            src="${pageContext.request.contextPath }/images/avatar/defaultavatar.jpg"
+                                                            src="${pageContext.request.contextPath }${comment.woner.avatar}"
                                                             alt="User"></a>
                                         </div>
                                         <div class="media-body">
@@ -257,7 +257,7 @@
                 "                <div class=\"media m-0\">\n" +
                 "                 <div class=\"d-flex mr-3\">\n" +
                 "                    <a href=\"\"><img class=\"img-fluid rounded-circle\"\n" +
-                "                          src=\"${pageContext.request.contextPath }/images/avatar/defaultavatar.jpg\"\n" +
+                "                          src=\"${pageContext.request.contextPath }${user.avatar}\"\n" +
                 "                     alt=\"User\"></a>\n" +
                 "                </div>\n" +
                 "\n" +

@@ -45,7 +45,7 @@
             <form:form action="${pageContext.request.contextPath}/user/profile-edit" method="post" modelAttribute="user" class="form-horizontal" role="form" enctype="multipart/form-data">
                 <div class="form-group">
                     <div class="col-sm-12 text-center">
-                        <img src="${pageContext.request.contextPath}/images/avatar/${user.avatar}" class="avatar img-circle" alt="avatar">
+                        <img src="${pageContext.request.contextPath}${user.avatar}" class="avatar img-circle" alt="avatar">
                         <h6>Upload a different photo...</h6>
 
                         <input type="file" name="file" class="form-control">
