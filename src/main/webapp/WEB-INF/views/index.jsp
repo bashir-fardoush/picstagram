@@ -126,7 +126,7 @@
                             <div class="media m-0">
                                 <div class="d-flex mr-3">
                                     <a href=""><img class="img-fluid rounded-circle"
-                                                    src="${pageContext.request.contextPath }${user.avatar}"
+                                                    src="${pageContext.request.contextPath }${posts.user.avatar}"
                                                     alt="User"></a>
                                 </div>
                                 <div class="media-body">
@@ -136,6 +136,12 @@
                                 </div>
                             </div><!--/ media -->
                         </div><!--/ cardbox-heading -->
+                        <div class="cardbox-item">
+                            </hr>
+                            <h3>${posts.postText}</h3>
+                            </hr>
+
+                        </div>
 
                         <div class="cardbox-item">
                             <c:forEach items="${posts.postImages}" var="postImage">
@@ -161,7 +167,7 @@
                             </ul>
                             <ul>
                                 <li><a>
-                                    <i onclick="addLike(${posts.id},${posts.user.id},this)" class="fa fa-thumbs-up" style="color: ${colorAttr}"></i></a></li>
+                                    <i onclick="addLike(${posts.id},${user.id},this)" class="fa fa-thumbs-up" style="color: ${colorAttr}"></i></a></li>
                                 <li><a><span> ${posts.totalLike} Likes</span></a></li>
                             </ul>
                         </div><!--/ cardbox-base -->
@@ -173,7 +179,7 @@
 			  </span>
                             <div class="search">
                                 <input id="comment_${posts.id}" placeholder="Write a comment" type="text">
-                                <button onclick="addComment(${posts.id},${posts.user.id})"><i class="fa fa-sms"></i>Send
+                                <button onclick="addComment(${posts.id},${user.id})"><i class="fa fa-sms"></i>Send
                                 </button>
                             </div><!--/. Search -->
 

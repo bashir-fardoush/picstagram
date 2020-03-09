@@ -15,6 +15,9 @@ public class Post  implements Serializable {
     @Column(name = "id", updatable = false, nullable = false)
     private long id;
 
+    @Column(name = "post_text", updatable = true, nullable = true)
+    private String postText;
+
     @ManyToOne
     @JoinColumn(name = "woner_id")
     private User user;
@@ -23,8 +26,6 @@ public class Post  implements Serializable {
     @CollectionTable(name = "post_images")
     private List<String> postImages =  new ArrayList<>();
 
-    @Column(name = "post_text", updatable = true, nullable = true)
-    private String postText;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments  = new ArrayList<>();

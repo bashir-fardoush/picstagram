@@ -32,7 +32,7 @@
                   <form:form action="${pageContext.request.contextPath}/post/write-post" method="post" modelAttribute="userpost" class="form-horizontal" role="form" enctype="multipart/form-data">
 
                       <div class="form-group">
-                          <label class="col-lg-3 control-label">Bio:</label>
+                          <label class="col-lg-3 control-label">Write something:</label>
                           <div class="col-lg-8">
                               <form:textarea path="postText" class="form-control" type="text" />
 
