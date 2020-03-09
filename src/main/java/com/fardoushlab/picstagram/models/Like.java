@@ -16,8 +16,9 @@ public class Like implements Serializable {
     @Column(name = "id", updatable = false, nullable = false)
     private long id;
 
-    /*@JoinColumn(name = "post_id")*/
+
     @ManyToOne
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @OneToOne

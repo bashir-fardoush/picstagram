@@ -1,35 +1,20 @@
-package com.fardoushlab.picstagram.models;
+package com.fardoushlab.picstagram.dtos;
 
-import javax.persistence.*;
+import com.fardoushlab.picstagram.models.Post;
+import com.fardoushlab.picstagram.models.User;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "comments")
-public class Comment implements Serializable {
+public class CommentDto implements Serializable {
 
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", updatable = false, nullable = false)
     private long id;
-
-
-    @ManyToOne
-    @JoinColumn(name = "post_id")
     private Post post;
-
-    @ManyToOne
-    @JoinColumn(name = "woner_id")
     private User woner;
-
-    @Column(name = "comment_text", updatable = true, nullable = false)
     private String commentText;
-
-    @Column(name = "comment_time", updatable = false, nullable = false)
     private LocalDateTime commentTime;
 
-    public Comment() {
+    public CommentDto() {
     }
 
     public long getId() {

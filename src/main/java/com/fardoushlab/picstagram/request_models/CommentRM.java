@@ -1,36 +1,20 @@
-package com.fardoushlab.picstagram.models;
+package com.fardoushlab.picstagram.request_models;
 
-import javax.persistence.*;
+import com.fardoushlab.picstagram.models.Post;
+import com.fardoushlab.picstagram.models.User;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "comments")
-public class Comment implements Serializable {
+public class CommentRM implements Serializable {
 
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", updatable = false, nullable = false)
     private long id;
-
-
-    @ManyToOne
-    @JoinColumn(name = "post_id")
     private Post post;
-
-    @ManyToOne
-    @JoinColumn(name = "woner_id")
+    private long postId;
     private User woner;
-
-    @Column(name = "comment_text", updatable = true, nullable = false)
+    private long wonerId;
     private String commentText;
-
-    @Column(name = "comment_time", updatable = false, nullable = false)
     private LocalDateTime commentTime;
-
-    public Comment() {
-    }
 
     public long getId() {
         return id;
@@ -70,5 +54,21 @@ public class Comment implements Serializable {
 
     public void setCommentTime(LocalDateTime commentTime) {
         this.commentTime = commentTime;
+    }
+
+    public long getPostId() {
+        return postId;
+    }
+
+    public void setPostId(long postId) {
+        this.postId = postId;
+    }
+
+    public long getWonerId() {
+        return wonerId;
+    }
+
+    public void setWonerId(long wonerId) {
+        this.wonerId = wonerId;
     }
 }

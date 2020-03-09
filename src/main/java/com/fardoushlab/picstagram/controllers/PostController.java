@@ -1,12 +1,16 @@
 package com.fardoushlab.picstagram.controllers;
 
+import com.fardoushlab.picstagram.dtos.CommentDto;
 import com.fardoushlab.picstagram.dtos.PostDto;
 import com.fardoushlab.picstagram.dtos.UserDto;
 import com.fardoushlab.picstagram.models.Post;
 import com.fardoushlab.picstagram.models.User;
+import com.fardoushlab.picstagram.request_models.CommentRM;
 import com.fardoushlab.picstagram.request_models.PostRM;
 import com.fardoushlab.picstagram.services.PostService;
 import com.fardoushlab.picstagram.services.UserService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -24,6 +28,8 @@ import java.util.List;
 
 @Controller
 public class PostController {
+
+    private Logger logger = Logger.getLogger(PostController.class);
 
     @Autowired
     PostService postService;
@@ -109,4 +115,39 @@ public class PostController {
 
         return "redirect:/index";
     }
+
+  /*  @PostMapping("/post/addcomment")
+    public String addNewComment(@ModelAttribute(name="comment") CommentRM commentRM){
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setCommentText(commentRM.getCommentText());
+
+        User user = new User();
+        user.setId(commentRM.getWonerId());
+
+        Post post = new Post();
+        post.setId(commentRM.getPostId());
+
+        commentDto.setWoner(user);
+        commentDto.setPost(post);
+
+        long commentId =  postService.addNewComment(commentDto);
+        CommentDto savedCommentDto = postService.getCommentById(commentId);
+
+        CommentRM savedCommentRm = new CommentRM();
+        BeanUtils.copyProperties(savedCommentDto,savedCommentRm);
+
+        return "redirect:/index";
+    }
+
+    @PostMapping("/post/like")
+    public String addNewLike(@RequestParam(name = "postId")long postId, @RequestParam(name = "userId") long userId){
+
+        logger.info("userId: "+userId+" postId: "+postId);
+
+        long likeid =   postService.addNewLike(postId,userId);
+
+        return "redirect:/index";
+    }*/
+
 }

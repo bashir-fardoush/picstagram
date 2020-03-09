@@ -18,6 +18,11 @@ public class PostDto {
     private List<Like> likes = new ArrayList<>();
     private LocalDateTime postTime;
 
+    private String postTimeString;
+    private long totalLike;
+    private long totalComment;
+    private boolean isLiked;
+
     public PostDto() {
     }
 
@@ -75,5 +80,37 @@ public class PostDto {
 
     public void setPostTime(LocalDateTime postTime) {
         this.postTime = postTime;
+    }
+
+    public String getPostTimeString() {
+        return postTimeString;
+    }
+
+    public void setPostTimeString(String postTimeString) {
+        this.postTimeString = postTimeString;
+    }
+
+    public long getTotalLike() {
+        return totalLike;
+    }
+
+    public void setTotalLike(long totalLike) {
+        this.totalLike = totalLike;
+    }
+
+    public long getTotalComment() {
+        return totalComment;
+    }
+
+    public void setTotalComment(long totalComment) {
+        this.totalComment = totalComment;
+    }
+
+    public boolean getIsLiked() {
+        return isLiked;
+    }
+
+    public void setIsLiked(boolean isLiked) {
+        this.isLiked = isLiked;
     }
 }

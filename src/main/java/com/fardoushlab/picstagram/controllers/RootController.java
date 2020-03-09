@@ -1,7 +1,12 @@
 package com.fardoushlab.picstagram.controllers;
 
+import com.fardoushlab.picstagram.dtos.PostDto;
 import com.fardoushlab.picstagram.dtos.UserDto;
+import com.fardoushlab.picstagram.models.Comment;
+import com.fardoushlab.picstagram.models.Like;
 import com.fardoushlab.picstagram.models.Post;
+import com.fardoushlab.picstagram.request_models.CommentRM;
+import com.fardoushlab.picstagram.request_models.PostRM;
 import com.fardoushlab.picstagram.request_models.UserRM;
 import com.fardoushlab.picstagram.services.PostService;
 import com.fardoushlab.picstagram.services.UserService;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -40,29 +46,25 @@ public class RootController {
     @GetMapping("/index")
     public String getHomePage(Model model, Authentication authentication){
 
-        UserDto dto = userService.getUserDtoByName(authentication.getName());
+        UserDto userDto = userService.getUserDtoByName(authentication.getName());
         UserRM userRM = new UserRM();
-        BeanUtils.copyProperties(dto, userRM);
+        BeanUtils.copyProperties(userDto, userRM);
 
-        List<Post> allPost = postService.getAllPost();
+        List<PostDto> allPost = postService.getAllPostDtoWithCommentAndLike(userDto.getId());
 
         model.addAttribute("user",userRM);
         model.addAttribute("post_list",allPost);
+        model.addAttribute("comment",new CommentRM());
 
 
         return "index";
     }
-
-
 
     @GetMapping("/login")
     public String getLoginPage(Model model, @RequestParam(name="error",required = false) Boolean error){
         model.addAttribute("error",error);
         return "auth/login";
     }
-
-
-
 
     @GetMapping("/register")
     public String getRegistrationPage(Model model, @RequestParam(name="error",required = false) Boolean error){
@@ -89,8 +91,6 @@ public class RootController {
             model.addAttribute("user", user);
             return "redirect:/register";
         }
-
-
 
         model.addAttribute("message","Your account created successfully..");
         return "redirect:/login";
