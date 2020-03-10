@@ -23,9 +23,7 @@ public class PostRestController {
     @PostMapping("/post/addcomment")
     public ResponseEntity<?> addNewComment(@RequestParam(name = "postId")long postId, @RequestParam(name = "userId") long userId, @RequestParam(name = "commentText") String commentText){
 
-
-
-         Post post = new Post();
+        Post post = new Post();
         post.setId(postId);
 
         User user = new User();
@@ -42,7 +40,11 @@ public class PostRestController {
         CommentDto savedCommentDto = postService.getCommentById(commentId);
 
         CommentRM savedCommentRm = new CommentRM();
-        BeanUtils.copyProperties(savedCommentDto,savedCommentRm);
+      //  BeanUtils.copyProperties(savedCommentDto,savedCommentRm);
+        savedCommentRm.setId(savedCommentDto.getId());
+        savedCommentRm.setPostId(savedCommentDto.getPost().getId());
+        savedCommentRm.setWonerId(savedCommentDto.getWoner().getId());
+        savedCommentRm.setCommentText(savedCommentDto.getCommentText());
 
         //return savedCommentRm;
         return new ResponseEntity<>(savedCommentRm, HttpStatus.OK);

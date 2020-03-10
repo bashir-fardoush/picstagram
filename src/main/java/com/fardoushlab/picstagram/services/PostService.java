@@ -276,7 +276,7 @@ public class PostService {
         }
 
         CommentDto commentDto = new CommentDto();
-        BeanUtils.copyProperties(commentDto,comment);
+        BeanUtils.copyProperties(comment,commentDto);
 
         return commentDto;
 

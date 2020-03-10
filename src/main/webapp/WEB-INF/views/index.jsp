@@ -63,7 +63,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="${pageContext.request.contextPath}/user/profile"><img alt="profile picture"
-                                                                                                src="${pageContext.request.contextPath}/images/avatar/${user.avatar}"
+                                                                                                src="${pageContext.request.contextPath}${user.avatar}"
                                                                                                 width="30px"
                                                                                                 height="30px"></a>
             </li>
@@ -166,15 +166,16 @@
 
                                     <ul class="float-right">
                                         <li><a><i class="fa fa-comments"></i></a></li>
-                                        <li><a><em class="mr-5">${posts.totalComment}</em></a></li>
-                                            <li><a><i class="fa fa-share-alt"></i></a></li>
+                                        <li><a><em class="mr-5" id="comment_count_${posts.id}">${posts.totalComment}</em></a></li>
+                                        <li><a><i class="fa fa-share-alt"></i></a></li>
                                         <li><a><em class="mr-3">03</em></a></li>
                                     </ul>
                                     <ul>
                                         <li><a>
                                             <i onclick="addLike(${posts.id},${user.id},this)" class="fa fa-thumbs-up"
                                                style="color: ${colorAttr}"></i></a></li>
-                                        <li><a><span> ${posts.totalLike} Likes</span></a></li>
+                                        <li><a><em class="mr-5" id="like_count_${posts.id}">${posts.totalLike}</em> Likes</a></li>
+                                        <%--<li><a><span id="like_count_${posts.id}">${posts.totalLike}</span> Likes</a></li>--%>
                                     </ul>
                                 </div><!--/ cardbox-base -->
                                 <div class="cardbox-comments">
@@ -183,7 +184,7 @@
                                   </span>
                                     <div class="search">
                                         <input id="comment_${posts.id}" placeholder="Write a comment" type="text">
-                                        <button onclick="addComment(${posts.id},${user.id})"><i class="fa fa-telegram-plane"></i>
+                                        <button onclick="addComment(${posts.id},${user.id})"><i class="fa fa-sms"></i>
                                         </button>
                                     </div><!--/. Search -->
 
@@ -299,13 +300,20 @@
             console.log(response);
             console.log("like saved");
 
+            var totalLikeStr = document.getElementById("like_count_"+postId).innerHTML;
+            var totalLike = parseInt(totalLikeStr);
+
             if (response > 0) {
                 // liked state
                 $(element).css("color", "#44d0b0");
+                totalLike++;
             } else {
                 // unliked state
                 $(element).css("color", "#8d8d8d");
+                totalLike--;
             }
+
+            document.getElementById("like_count_"+postId).innerHTML = totalLike;
 
 
         }).fail(function () {
@@ -317,11 +325,8 @@
 
 
     function addComment(postId, userId) {
-        console.log(postId);
-        console.log(userId);
-        console.log($('#comment_' + postId).val());
-        var commentText = $('#comment_' + postId).val();
 
+        var commentText = $('#comment_' + postId).val();
         var url = "${pageContext.request.contextPath}/api/v1/post/addcomment";
 
 
@@ -330,7 +335,15 @@
             url: url,
             data: {postId: postId, userId: userId, commentText: commentText}
         }).done(function (response) {
-            console.log(response)
+
+            console.log(response);
+            if (response.id <= 0){
+                console.log("Invalid comment id")
+                return;
+            }
+
+            $('#comment_' + postId).val('');
+
             $('#comments_' + postId).append(" </hr> <div >\n" +
                 "                <div class=\"media m-0\">\n" +
                 "                 <div class=\"d-flex mr-3\">\n" +
@@ -347,6 +360,12 @@
                 "            </div>");
 
             // end of ammend
+
+
+            var totalCommentStr = document.getElementById("comment_count_"+postId).innerHTML;
+            var totalComment = parseInt(totalCommentStr);
+            totalComment++;
+            document.getElementById("comment_count_"+postId).innerHTML = totalComment;
 
 
         }).fail(function () {
