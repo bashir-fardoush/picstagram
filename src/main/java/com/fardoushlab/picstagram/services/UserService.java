@@ -4,6 +4,7 @@ import com.fardoushlab.picstagram.config.persistancy.HibernateConfig;
 import com.fardoushlab.picstagram.dtos.UserDto;
 import com.fardoushlab.picstagram.models.User;
 import org.hibernate.HibernateException;
+import org.hibernate.query.Query;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,10 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -182,5 +180,150 @@ public class UserService implements UserDetailsService {
             session.close();
         }
 
+    }
+
+    public List<UserDto> getAllUserList() {
+
+        var session = config.getSession();
+        var transaction = session.getTransaction();
+
+        if (!transaction.isActive()){
+            transaction = session.beginTransaction();
+        }
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<User> userCriteriaQuery = cb.createQuery(User.class);
+        Root<User> root = userCriteriaQuery.from(User.class);
+
+
+        var query = session.createQuery(userCriteriaQuery);
+
+        var userDtoList = new ArrayList<UserDto>();
+        try {
+
+           query.getResultList().forEach(user -> {
+               UserDto userDto = new UserDto();
+               BeanUtils.copyProperties(user,userDto);
+               userDto.setPassword("");
+               userDtoList.add(userDto);
+           });
+        }catch (HibernateException e){
+            e.printStackTrace();
+        }finally {
+            session.close();
+        }
+
+        return userDtoList;
+    }
+
+    @Transactional
+    public void setFriendConnection(long userId, long friendId) {
+
+        var session = config.getSession();
+        var transaction = session.getTransaction();
+
+        if (!transaction.isActive()){
+            transaction = session.beginTransaction();
+        }
+
+        // get the user
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<User> userfollowingQuery = cb.createQuery(User.class);
+        Root<User> root = userfollowingQuery.from(User.class);
+        //userCriteriaQuery.select(root.get("following"));
+        userfollowingQuery.where(cb.equal(root.get("id"),userId));
+
+        //get friend
+        CriteriaQuery<User> userFollowedByQuery = cb.createQuery(User.class);
+        Root<User> followedRoot = userFollowedByQuery.from(User.class);
+        userFollowedByQuery.where(cb.equal(root.get("id"),friendId));
+
+
+        var followingQuery = session.createQuery(userfollowingQuery);
+        var followedByQuery = session.createQuery(userFollowedByQuery);
+
+
+
+        try {
+
+            // retrieve user and add following
+            User user = followingQuery.getSingleResult();
+            List<Long> followingList = user.getFollowing();
+            followingList.add(friendId);
+            user.setFollowing(followingList);
+            session.save(user);
+
+            // get friend and add followed by
+            User friend = followedByQuery.getSingleResult();
+            List<Long> followedByList = friend.getFollowedBy();
+            followedByList.add(userId);
+            friend.setFollowedBy(followedByList);
+            session.save(friend);
+
+            transaction.commit();
+
+
+        }catch (HibernateException e){
+            e.printStackTrace();
+            if (transaction != null){
+                transaction.rollback();
+            }
+        }finally {
+            session.close();
+        }
+
+
+    }
+
+    public List<UserDto> getNonFriendUserList(long userId) {
+
+        var session = config.getSession();
+        var transaction = session.getTransaction();
+
+        if (!transaction.isActive()){
+            transaction = session.beginTransaction();
+        }
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<User> userCriteriaQuery = cb.createQuery(User.class);
+        Root<User> root = userCriteriaQuery.from(User.class);
+
+        Subquery<Long> sq = userCriteriaQuery.subquery(Long.class);
+        Root<User> sqroot = sq.from(User.class);
+        sq.select(sqroot.get("following"));
+        sq.where(cb.equal(sqroot.get("id"),userId));
+
+        userCriteriaQuery.where(cb.equal(root.get("id"),userId));
+        var userQuery = session.createQuery(userCriteriaQuery);
+
+        List<UserDto> nonfriendDtos = new ArrayList<>();
+
+        try{
+
+            User user = userQuery.getSingleResult();
+            List<Long> following = user.getFollowing();
+
+            userCriteriaQuery.where(root.get("id").in(following).not());
+
+            var nonfriendQuery = session.createQuery(userCriteriaQuery);
+            List<User> nonfriendList = nonfriendQuery.getResultList();
+
+            nonfriendList.forEach(user1 ->{
+                UserDto userDto = new UserDto();
+                BeanUtils.copyProperties(user1,userDto);
+                nonfriendDtos.add(userDto);
+            } );
+
+
+        }catch (HibernateException exceptione) {
+            exceptione.printStackTrace();
+        }finally {
+            session.close();
+        }
+
+
+
+
+        return nonfriendDtos;
     }
 }

@@ -4,6 +4,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -40,6 +42,14 @@ public class User implements Serializable {
 
     @Column(name = "updatedAt", updatable = true, nullable = true)
     private LocalDateTime updatedAt;
+
+    @ElementCollection(fetch=FetchType.LAZY)
+    @CollectionTable(name = "following")
+    private List<Long> following =  new ArrayList<>();
+
+    @ElementCollection(fetch=FetchType.LAZY)
+    @CollectionTable(name = "followed_by")
+    private List<Long> followedBy =  new ArrayList<>();
 
     public User() {
     }
@@ -122,5 +132,21 @@ public class User implements Serializable {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<Long> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(List<Long> following) {
+        this.following = following;
+    }
+
+    public List<Long> getFollowedBy() {
+        return followedBy;
+    }
+
+    public void setFollowedBy(List<Long> followedBy) {
+        this.followedBy = followedBy;
     }
 }

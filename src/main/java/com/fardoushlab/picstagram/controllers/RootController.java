@@ -52,8 +52,12 @@ public class RootController {
 
         List<PostDto> allPost = postService.getAllPostDtoWithCommentAndLike(userDto.getId());
 
+        List<UserDto> userDtoList = userService.getNonFriendUserList(userDto.getId());
+
+
         model.addAttribute("user",userRM);
         model.addAttribute("post_list",allPost);
+        model.addAttribute("user_list",userDtoList);
         model.addAttribute("comment",new CommentRM());
 
 
@@ -85,6 +89,8 @@ public class RootController {
         userDto.setAvatar("defaultavatar.jpg");
 
         long userId = userService.addUser(userDto);
+
+        userService.setFriendConnection(userId,userId);
 
         if(userId <= 0){
             model.addAttribute("error",error);
