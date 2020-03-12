@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1")
 public class UserRestController {
+
     private Logger logger = Logger.getLogger(PostController.class);
+
     @Autowired
     UserService userService;
 
@@ -27,4 +29,7 @@ public class UserRestController {
         return new ResponseEntity<>("friend saved", HttpStatus.OK);
 
     }
+
+
+
 }

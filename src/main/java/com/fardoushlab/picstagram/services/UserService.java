@@ -66,7 +66,6 @@ public class UserService implements UserDetailsService {
 
         }
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -108,6 +107,7 @@ public class UserService implements UserDetailsService {
 
     }
 
+
     public UserDto getUserDtoByName(String userName){
 
         var session = config.getSession();
@@ -142,7 +142,6 @@ public class UserService implements UserDetailsService {
 
         return userDto;
     }
-
 
     public void updateUserProfile(UserDto userDto) {
 
