@@ -9,7 +9,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,6 +30,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Picstagram</a>
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
             aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -88,18 +88,26 @@
 
             <li class="nav-item">
                 <a class="nav-link" href="${pageContext.request.contextPath}/logout">
-                    <svg aria-label="Logout" fill="#262626" height="22" viewBox="0 0 48 48" width="22">
-                        <path clip-rule="evenodd"
-                              d="M34.3 3.5C27.2 3.5 24 8.8 24 8.8s-3.2-5.3-10.3-5.3C6.4 3.5.5 9.9.5 17.8s6.1 12.4 12.2 17.8c9.2 8.2 9.8 8.9 11.3 8.9s2.1-.7 11.3-8.9c6.2-5.5 12.2-10 12.2-17.8 0-7.9-5.9-14.3-13.2-14.3zm-1 29.8c-5.4 4.8-8.3 7.5-9.3 8.1-1-.7-4.6-3.9-9.3-8.1-5.5-4.9-11.2-9-11.2-15.6 0-6.2 4.6-11.3 10.2-11.3 4.1 0 6.3 2 7.9 4.2 3.6 5.1 1.2 5.1 4.8 0 1.6-2.2 3.8-4.2 7.9-4.2 5.6 0 10.2 5.1 10.2 11.3 0 6.7-5.7 10.8-11.2 15.6z"
-                              fill-rule="evenodd"></path>
-                    </svg>
+                   <i class="fa fa-sign-out-alt"></i>
                 </a>
             </li>
-
-
         </ul>
 
-
+        <div class="dropdown ">
+            <button class="btn btn-outline-secondary dropdown-toggle ml-3"
+                    type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                <sec:authorize access="isAuthenticated()">
+                    <sec:authentication property="principal.username" />
+                </sec:authorize>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <%--                    <a class="dropdown-item"--%>
+                <%--                       href="${pageContext.request.contextPath}/edit_profile">Edit Profile</a>--%>
+                <a class="dropdown-item"
+                   href="${pageContext.request.contextPath}/logout">Logout</a>
+            </div>
+        </div>
     </div>
 </nav>
 
@@ -107,8 +115,12 @@
     <div class="container-fluid">
 
         <div class="row">
+            <div class="col-lg-3">
+                <a  class="btn btn-default btn-circle btn-md btn-lateral float-left align-bottom" href="${pageContext.request.contextPath}/index?pageId=${pageId}&requestType=prev"><i class="fa fa-angle-left"></i></a>
+
+            </div>
             <%--post section--%>
-            <div class="col-lg-6 offset-lg-3">
+            <div class="col-lg-6">
                 <c:forEach items="${post_list }" var="posts">
                     <div class="row">
                         <div>
@@ -130,11 +142,11 @@
                                     <div class="media m-0">
                                         <div class="d-flex mr-3">
                                             <a href=""><img class="img-fluid rounded-circle"
-                                                            src="${pageContext.request.contextPath }${posts.user.avatar}"
+                                                            src="${pageContext.request.contextPath }${posts.woner.avatar}"
                                                             alt="User"></a>
                                         </div>
                                         <div class="media-body">
-                                            <p class="m-0">${posts.user.fullName}</p>
+                                            <p class="m-0">${posts.woner.fullName}</p>
                                             <small><span><i class="icon ion-md-pin"></i> Dhaka, Banagladesh</span>
                                             </small>
                                             <small><span><i class="icon ion-md-time"></i> 10 min ago</span></small>
@@ -149,13 +161,16 @@
                                 </div>
 
                                 <div class="cardbox-item">
-                                    <c:forEach items="${posts.postImages}" var="postImage">
-                                        <div>
-                                            <img class="img-fluid" src="${pageContext.request.contextPath }${postImage}"
-                                                 alt="Image">
-                                        </div>
-                                    </c:forEach>
-
+                                    <ul class="gallery_box">
+                                        <c:forEach items="${posts.postImages}" var="postImage">
+                                            <li>
+                                                <a href="#0"><img src="${pageContext.request.contextPath }${postImage}">
+                                                    <div class="box_data">
+                                                        <span>Caption</span>
+                                                    </div></a>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
 
                                 </div><!--/ cardbox-item -->
                                 <div class="cardbox-base">
@@ -184,7 +199,7 @@
                                   </span>
                                     <div class="search">
                                         <input id="comment_${posts.id}" placeholder="Write a comment" type="text">
-                                        <button onclick="addComment(${posts.id},${user.id})"><i class="fa fa-sms"></i>
+                                        <button onclick="addComment(${posts.id},${user.id})"><i class="fa fa-paper-plane"></i>
                                         </button>
                                     </div><!--/. Search -->
 
@@ -223,12 +238,13 @@
             <div class="col-lg-3 col-sm-12">
 
                 <div class="cardbox shadow-lg bg-white">
-                    <h4>Friend suggestion for you</h4>
+
+                    <h4>Friend suggestion for you <a href="${pageContext.request.contextPath}/user/friendSuggestion"> See more >></a></h4>
 
                     <c:forEach items="${user_list }" var="userFriend">
                         <div class="row" id="suggestion_${userFriend.id}">
                             <div class="col-sm-12 cardbox-heading ml-1" >
-                                <a class="btn btn-success float-right" onclick="addFriend(${user.id}, ${userFriend.id})"><i class="fa fa-user-plus"></i></a>
+                                <a class="btn btn-success float-right" onclick="followFriend(${user.id}, ${userFriend.id})"><i class="fa fa-user-plus"></i></a>
 
                                 <div class="media m-0">
                                     <div class="d-flex mr-3">
@@ -239,7 +255,7 @@
                                     <div class="media-body">
                                         <p class="m-0">${userFriend.fullName}</p>
                                         <small><span><i
-                                                class="icon ion-md-time"></i> ${userFriend.email}</span>
+                                                class="icon ion-md-time"></i> ${userFriend.followedBy} Follower</span>
                                         </small>
                                     </div>
                                 </div>
@@ -250,22 +266,24 @@
                     </c:forEach>
                 </div>
 
-
+                <%--onclick="loadPagedContent(${"pageId"},'next')"--%>
+                <a  class="btn btn-default btn-circle btn-md btn-lateral float-right align-bottom" href="${pageContext.request.contextPath}/index?pageId=${pageId}&requestType=next"><i class="fa fa-angle-right"></i></a>
 
             </div>
 
         </div>
 
 
+
     </div><!--/ container -->
 </section>
 <script>
 
-    function addFriend(userId,friendId) {
+    function followFriend(userId, friendId) {
         console.log(userId);
         console.log(friendId);
 
-        var url = "${pageContext.request.contextPath}/api/v1/user/addfriend";
+        var url = "${pageContext.request.contextPath}/api/v1/user/followfriend";
 
         //console.log(this);
         $.ajax({
@@ -379,3 +397,8 @@
 </script>
 </body>
 </html>
+
+
+<%--
+image group
+https://bootsnipp.com/snippets/4Myjm--%>

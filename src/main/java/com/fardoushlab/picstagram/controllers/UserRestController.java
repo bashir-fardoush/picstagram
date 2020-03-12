@@ -17,11 +17,11 @@ public class UserRestController {
     @Autowired
     UserService userService;
 
-    @PostMapping("/user/addfriend")
+    @PostMapping("/user/followfriend")
     public ResponseEntity<?> saveFriend(@RequestParam(name = "userId") long userId, @RequestParam(name = "friendId") long friendId){
         logger.info("user:"+userId+" friend:"+friendId);
 
-        userService.setFriendConnection(userId, friendId);
+        userService.followFriend(userId, friendId);
 
 
         return new ResponseEntity<>("friend saved", HttpStatus.OK);

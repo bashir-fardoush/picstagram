@@ -16,6 +16,12 @@
           href="${pageContext.request.contextPath }/css/bootstrap.min.css" type="text/css"/>
     <link rel="stylesheet"
           href="${pageContext.request.contextPath }/css/style.css" type="text/css"/>
+
+    link class="jsbin" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+    <meta charset=utf-8 />
+
 </head>
 <body>
 
@@ -45,10 +51,10 @@
             <form:form action="${pageContext.request.contextPath}/user/profile-edit" method="post" modelAttribute="user" class="form-horizontal" role="form" enctype="multipart/form-data">
                 <div class="form-group">
                     <div class="col-sm-12 text-center">
-                        <img src="${pageContext.request.contextPath}${user.avatar}" class="avatar img-circle" alt="avatar">
+                        <img  id="profile_image"  src="${pageContext.request.contextPath}${user.avatar}" class="avatar img-circle" alt="avatar">
                         <h6>Upload a different photo...</h6>
 
-                        <input type="file" name="file" class="form-control">
+                        <input type="file" name="file"  onchange="readURL(this)" class="form-control">
                     </div>
                 </div>
                 <div class="form-group">
@@ -96,5 +102,21 @@
 </div>
 <hr>
 
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#profile_image')
+                    .attr('src', e.target.result)
+                    .width(150)
+                    .height(200);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 </body>
 </html>

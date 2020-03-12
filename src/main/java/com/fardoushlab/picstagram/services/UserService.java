@@ -2,7 +2,9 @@ package com.fardoushlab.picstagram.services;
 
 import com.fardoushlab.picstagram.config.persistancy.HibernateConfig;
 import com.fardoushlab.picstagram.dtos.UserDto;
+import com.fardoushlab.picstagram.dtos.UserSuggDto;
 import com.fardoushlab.picstagram.models.User;
+import com.fardoushlab.picstagram.util.Util;
 import org.hibernate.HibernateException;
 import org.hibernate.query.Query;
 import org.springframework.beans.BeanUtils;
@@ -217,7 +219,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void setFriendConnection(long userId, long friendId) {
+    public void followFriend(long userId, long friendId) {
 
         var session = config.getSession();
         var transaction = session.getTransaction();
@@ -274,8 +276,33 @@ public class UserService implements UserDetailsService {
 
 
     }
+    /*
+    *   return all nof friend user
+    *   -1 indicated no limit will be applicable
+    */
+    public List<UserSuggDto> getNonFriendUserList(long userId){
+        return getNonFriendUserList(userId, 1, -1);
+    }
 
-    public List<UserDto> getNonFriendUserList(long userId) {
+    /*
+     *   return specific number of non friend user
+     */
+    public List<UserSuggDto> getNonFriendUserList(long userId, int limit){
+        return getNonFriendUserList(userId,1,limit);
+    }
+
+    /**
+     *  return paged non friend users, -1 indicates no limit
+    */
+    public List<UserSuggDto> getNonFriendUserList(long userId,int pageId, int limit) {
+
+
+        int offset =0;
+        if(pageId== 1){ }
+        else{
+
+            offset= (int) ((pageId -1) * limit);
+        }
 
         var session = config.getSession();
         var transaction = session.getTransaction();
@@ -287,16 +314,11 @@ public class UserService implements UserDetailsService {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<User> userCriteriaQuery = cb.createQuery(User.class);
         Root<User> root = userCriteriaQuery.from(User.class);
-
-        Subquery<Long> sq = userCriteriaQuery.subquery(Long.class);
-        Root<User> sqroot = sq.from(User.class);
-        sq.select(sqroot.get("following"));
-        sq.where(cb.equal(sqroot.get("id"),userId));
-
         userCriteriaQuery.where(cb.equal(root.get("id"),userId));
+
         var userQuery = session.createQuery(userCriteriaQuery);
 
-        List<UserDto> nonfriendDtos = new ArrayList<>();
+        List<UserSuggDto> nonfriendDtos = new ArrayList<>();
 
         try{
 
@@ -304,13 +326,24 @@ public class UserService implements UserDetailsService {
             List<Long> following = user.getFollowing();
 
             userCriteriaQuery.where(root.get("id").in(following).not());
-
             var nonfriendQuery = session.createQuery(userCriteriaQuery);
+
+            if (limit > 0 ){
+                nonfriendQuery.setFirstResult(offset);
+                nonfriendQuery.setMaxResults(limit);
+            }
+
+
             List<User> nonfriendList = nonfriendQuery.getResultList();
 
-            nonfriendList.forEach(user1 ->{
-                UserDto userDto = new UserDto();
-                BeanUtils.copyProperties(user1,userDto);
+            nonfriendList.forEach(tempUser ->{
+                UserSuggDto userDto = new UserSuggDto();
+                BeanUtils.copyProperties(tempUser,userDto);
+                userDto.setFollowing(tempUser.getFollowing().size());
+                userDto.setFollowedBy(tempUser.getFollowedBy().size());
+                userDto.setJoinDate(Util.getStringDate(LocalDate.from(tempUser.getCreatedAt()),Util.DOB_DATE_FORMAT));
+
+
                 nonfriendDtos.add(userDto);
             } );
 

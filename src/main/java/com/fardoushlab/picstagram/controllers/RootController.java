@@ -1,15 +1,11 @@
 package com.fardoushlab.picstagram.controllers;
 
-import com.fardoushlab.picstagram.dtos.PostDto;
-import com.fardoushlab.picstagram.dtos.UserDto;
-import com.fardoushlab.picstagram.models.Comment;
-import com.fardoushlab.picstagram.models.Like;
-import com.fardoushlab.picstagram.models.Post;
+import com.fardoushlab.picstagram.dtos.*;
 import com.fardoushlab.picstagram.request_models.CommentRM;
-import com.fardoushlab.picstagram.request_models.PostRM;
 import com.fardoushlab.picstagram.request_models.UserRM;
 import com.fardoushlab.picstagram.services.PostService;
 import com.fardoushlab.picstagram.services.UserService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -21,11 +17,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class RootController {
+
+    private Logger logger = Logger.getLogger(RootController.class);
 
     @Autowired
     UserService userService;
@@ -44,21 +41,42 @@ public class RootController {
     }
 
     @GetMapping("/index")
-    public String getHomePage(Model model, Authentication authentication){
+    public String getHomePage(Model model,
+                              @RequestParam(name = "pageId", required = false) Long pageId,
+                              @RequestParam(name = "requestType", required = false) String requestType, Authentication authentication){
+
+        if (pageId == null){
+            pageId = Long.valueOf(1);
+        }else {
+            if (requestType.equals("prev")){
+                pageId--;
+            }else if (requestType.equals("next")){
+                pageId++;
+            }
+
+            if (pageId < 1){
+                pageId  = Long.valueOf(1);
+            }
+        }
+
+        logger.info("pageId: "+pageId);
 
         UserDto userDto = userService.getUserDtoByName(authentication.getName());
-        UserRM userRM = new UserRM();
-        BeanUtils.copyProperties(userDto, userRM);
+        UserDtoMinimal userDtoMinimal = new UserDtoMinimal();
+        BeanUtils.copyProperties(userDto,userDtoMinimal);
+        //BeanUtils.copyProperties(userDto, userRM);
 
-        List<PostDto> allPost = postService.getAllPostDtoWithCommentAndLike(userDto.getId());
-
-        List<UserDto> userDtoList = userService.getNonFriendUserList(userDto.getId());
+        List<PostDtoMinimal> pagedMinimalposts = postService.getPagedMinimalposts(userDto.getId(), pageId);
 
 
-        model.addAttribute("user",userRM);
-        model.addAttribute("post_list",allPost);
+        List<UserSuggDto> userDtoList = userService.getNonFriendUserList(userDto.getId(),5);
+
+
+        model.addAttribute("user",userDtoMinimal);
+        model.addAttribute("post_list",pagedMinimalposts);
         model.addAttribute("user_list",userDtoList);
         model.addAttribute("comment",new CommentRM());
+        model.addAttribute("pageId",pageId);
 
 
         return "index";
@@ -90,7 +108,7 @@ public class RootController {
 
         long userId = userService.addUser(userDto);
 
-        userService.setFriendConnection(userId,userId);
+        userService.followFriend(userId,userId);
 
         if(userId <= 0){
             model.addAttribute("error",error);

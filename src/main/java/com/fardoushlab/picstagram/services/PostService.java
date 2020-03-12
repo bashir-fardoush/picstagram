@@ -1,13 +1,12 @@
 package com.fardoushlab.picstagram.services;
 
 import com.fardoushlab.picstagram.config.persistancy.HibernateConfig;
-import com.fardoushlab.picstagram.dtos.CommentDto;
-import com.fardoushlab.picstagram.dtos.PostDto;
-import com.fardoushlab.picstagram.dtos.UserDto;
+import com.fardoushlab.picstagram.dtos.*;
 import com.fardoushlab.picstagram.models.Comment;
 import com.fardoushlab.picstagram.models.Like;
 import com.fardoushlab.picstagram.models.Post;
 import com.fardoushlab.picstagram.models.User;
+import com.fardoushlab.picstagram.util.Util;
 import org.hibernate.HibernateException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -396,5 +395,226 @@ public class PostService {
 
         return val;
 
+    }
+
+    public List<Long> getFollowingUserIds(long userId){
+
+        var session = hibernateConfig.getSession();
+        var transaction = session.getTransaction();
+
+        if (!transaction.isActive()){
+            transaction = session.beginTransaction();
+        }
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<User> userfollowingQuery = cb.createQuery(User.class);
+        Root<User> root = userfollowingQuery.from(User.class);
+        //userCriteriaQuery.select(root.get("following"));
+        userfollowingQuery.where(cb.equal(root.get("id"),userId));
+
+        var query = session.createQuery(userfollowingQuery);
+        List<Long> followingList = new ArrayList<>();
+        try {
+
+            // retrieve user and add following
+            User user = query.getSingleResult();
+            followingList = user.getFollowing();
+
+
+        }catch (HibernateException e){
+            e.printStackTrace();
+        }finally {
+            session.close();
+        }
+
+        return followingList;
+
+    }
+
+    public List<PostDto> getPagedposts(long userId, long pageId) {
+
+      //  List<Long> followingUserIds = getFollowingUserIds(userId);
+        int pageTotalItem = 3;
+        int offset =0;
+        if(pageId== 1){ }
+        else{
+
+            offset= (int) ((pageId -1) * pageTotalItem);
+        }
+
+
+        var session = hibernateConfig.getSession();
+        var transaction = session.getTransaction();
+
+        if (!transaction.isActive()){
+            transaction = session.beginTransaction();
+        }
+
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<User> userfollowingQuery = cb.createQuery(User.class);
+        Root<User> root = userfollowingQuery.from(User.class);
+        //userCriteriaQuery.select(root.get("following"));
+        userfollowingQuery.where(cb.equal(root.get("id"),userId));
+
+        var query = session.createQuery(userfollowingQuery);
+        List<Long> followingList = query.getSingleResult().getFollowing();
+
+
+        CriteriaQuery<Post> postCQ = cb.createQuery(Post.class);
+        Root<Post> postRoot = postCQ.from(Post.class);
+        postCQ.select(postRoot);
+        postCQ.orderBy(cb.desc(postRoot.get("id")));
+
+
+        postCQ.where(postRoot.get("user").in(followingList));
+
+        var postQuery = session.createQuery(postCQ);
+        postQuery.setFirstResult(offset);
+        postQuery.setMaxResults(pageTotalItem);
+
+        List<PostDto> resultList = new ArrayList<>();
+
+        try {
+            postQuery.getResultList().forEach(post -> {
+
+                PostDto dto = new PostDto();
+                BeanUtils.copyProperties(post,dto);
+                dto.setComments(post.getComments());
+                dto.setLikes(post.getLikes());
+                dto.setTotalComment(post.getComments().size());
+                dto.setTotalLike(post.getLikes().size());
+                dto.setIsLiked(false);
+                var likes = dto.getLikes();
+
+                for(int i = 0; i<likes.size(); i++){
+
+                    if (likes.get(i).getWoner().getId() == userId){
+
+                        dto.setIsLiked(true);
+                        break;
+                    }
+                }
+
+
+                resultList.add(dto);
+
+
+            });
+
+        }catch (HibernateException e){
+            e.printStackTrace();
+        }finally {
+            session.close();
+        }
+
+        return resultList;
+
+    }
+
+    public List<PostDtoMinimal> getPagedMinimalposts(long userId, Long pageId) {
+        //  List<Long> followingUserIds = getFollowingUserIds(userId);
+        int pageTotalItem = 3;
+        int offset =0;
+        if(pageId== 1){ }
+        else{
+
+            offset= (int) ((pageId -1) * pageTotalItem);
+        }
+
+
+        var session = hibernateConfig.getSession();
+        var transaction = session.getTransaction();
+
+        if (!transaction.isActive()){
+            transaction = session.beginTransaction();
+        }
+
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<User> userfollowingQuery = cb.createQuery(User.class);
+        Root<User> root = userfollowingQuery.from(User.class);
+        //userCriteriaQuery.select(root.get("following"));
+        userfollowingQuery.where(cb.equal(root.get("id"),userId));
+
+        var query = session.createQuery(userfollowingQuery);
+        List<Long> followingList = query.getSingleResult().getFollowing();
+
+
+        CriteriaQuery<Post> postCQ = cb.createQuery(Post.class);
+        Root<Post> postRoot = postCQ.from(Post.class);
+        postCQ.select(postRoot);
+        postCQ.orderBy(cb.desc(postRoot.get("id")));
+
+
+        postCQ.where(postRoot.get("user").in(followingList));
+
+        var postQuery = session.createQuery(postCQ);
+        postQuery.setFirstResult(offset);
+        postQuery.setMaxResults(pageTotalItem);
+
+        List<PostDtoMinimal> resultList = new ArrayList<>();
+
+        try {
+
+            postQuery.getResultList().stream().forEach(post -> {
+
+                PostDtoMinimal postDtoMinimal = new PostDtoMinimal();
+                BeanUtils.copyProperties(post,postDtoMinimal);
+                UserDtoMinimal postWoner = new UserDtoMinimal();
+                BeanUtils.copyProperties(post.getUser(),postWoner);
+                postDtoMinimal.setWoner(postWoner);
+                //keep in consideration
+                //postDtoMinimal.setPostTimeString();
+
+                List<CommentDtoMinimal> minimalComments = new ArrayList<>();
+                List<Comment> postComments = post.getComments();
+
+                   postComments.stream().forEach(comment -> {
+
+                   CommentDtoMinimal cm = new CommentDtoMinimal();
+                   cm.setId(comment.getId());
+                   cm.setCommentText(comment.getCommentText());
+                   // keep in consideration
+                   //cm.setCommentTime();
+
+                   UserDtoMinimal userDtoMinimal = new UserDtoMinimal();
+                   BeanUtils.copyProperties(comment.getWoner(),userDtoMinimal);
+                   cm.setWoner(userDtoMinimal);
+
+                //   postDtoMinimal.addComment(cm);
+                       minimalComments.add(cm);
+
+               });
+
+                   postDtoMinimal.setComments(minimalComments);
+
+
+                //dto.setLikes(post.getLikes());
+                postDtoMinimal.setTotalComment(post.getComments().size());
+                postDtoMinimal.setTotalLike(post.getLikes().size());
+                postDtoMinimal.setIsLiked(false);
+                var likes = post.getLikes();
+
+                for(int i = 0; i<likes.size(); i++){
+
+                    if (likes.get(i).getWoner().getId() == userId){
+
+                        postDtoMinimal.setIsLiked(true);
+                        break;
+                    }
+                }
+                resultList.add(postDtoMinimal);
+
+
+            });
+
+        }catch (HibernateException e){
+            e.printStackTrace();
+        }finally {
+            session.close();
+        }
+
+        return resultList;
     }
 }
