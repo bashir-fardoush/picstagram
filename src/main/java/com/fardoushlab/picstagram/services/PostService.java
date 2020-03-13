@@ -11,10 +11,7 @@ import org.hibernate.HibernateException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -616,5 +613,41 @@ public class PostService {
         }
 
         return resultList;
+    }
+
+    @Transactional
+    public void deleteComment(long commentId) {
+
+        var session = hibernateConfig.getSession();
+        var transaction = session.getTransaction();
+
+        if (!transaction.isActive()){
+            transaction = session.beginTransaction();
+        }
+
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaUpdate<Comment> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Comment.class);
+        Root<Comment> root = criteriaUpdate.from(Comment.class);
+
+        criteriaUpdate.set("isDeleted",false);
+        criteriaUpdate.where(criteriaBuilder.equal(root.get("id"),commentId));
+
+        var query = session.createQuery(criteriaUpdate);
+
+        try{
+            int i = query.executeUpdate();
+            transaction.commit();
+        }catch (HibernateException e){
+
+            if (transaction != null){
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }finally {
+            session.close();
+        }
+        query.executeUpdate();
+
+
     }
 }

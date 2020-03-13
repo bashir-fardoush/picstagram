@@ -116,6 +116,7 @@ public class PostController {
         return "redirect:/index";
     }
 
+
   /*  @PostMapping("/post/addcomment")
     public String addNewComment(@ModelAttribute(name="comment") CommentRM commentRM){
 

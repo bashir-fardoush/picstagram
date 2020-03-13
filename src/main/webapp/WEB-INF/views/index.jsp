@@ -91,6 +91,13 @@
                    <i class="fa fa-sign-out-alt"></i>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                   <i class="fa fa-sign">
+                        <security:authentication property="principal.username" />
+                   </i>
+                </a>
+            </li>
         </ul>
 
         <div class="dropdown ">
@@ -141,7 +148,8 @@
                                     </div><!--/ dropdown -->
                                     <div class="media m-0">
                                         <div class="d-flex mr-3">
-                                            <a href=""><img class="img-fluid rounded-circle"
+                                            <a href="${pageContext.request.contextPath}/user/profile?username=${posts.woner.username}">
+                                                <img class="img-fluid rounded-circle"
                                                             src="${pageContext.request.contextPath }${posts.woner.avatar}"
                                                             alt="User"></a>
                                         </div>

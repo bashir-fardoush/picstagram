@@ -17,17 +17,37 @@
     <link rel="stylesheet"
           href="${pageContext.request.contextPath }/css/style.css" type="text/css"/>
 
-    link class="jsbin" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link class="jsbin" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
     <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
     <meta charset=utf-8 />
+    <style>
+
+        .profile-image {
+            width: calc(33.333% - 1rem);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 3rem;
+        }
+
+        .profile-image img {
+            border-radius: 50%;
+        }
+
+    </style>
 
 </head>
 <body>
 
+<section>
+    <div class="container">
+        <h1>Edit Profile</h1>
+    </div>
+    </hr>
+</section>
 <div class="container">
-    <h1>Edit Profile</h1>
-    <hr>
+
     <div class="row">
         <!-- left column -->
         <div class="col-md-3">
@@ -41,17 +61,23 @@
 
         <!-- edit form column -->
         <div class="col-md-9 personal-info">
-            <div class="alert alert-info alert-dismissable">
+          <%--  <div class="alert alert-info alert-dismissable">
                 <a class="panel-close close" data-dismiss="alert">×</a>
                 <i class="fa fa-coffee"></i>
                 This is an <strong>.alert</strong>. Use this to show important messages to the user.
-            </div>
+            </div>--%>
             <h3>Personal info</h3>
 
             <form:form action="${pageContext.request.contextPath}/user/profile-edit" method="post" modelAttribute="user" class="form-horizontal" role="form" enctype="multipart/form-data">
                 <div class="form-group">
                     <div class="col-sm-12 text-center">
-                        <img  id="profile_image"  src="${pageContext.request.contextPath}${user.avatar}" class="avatar img-circle" alt="avatar">
+                        <div class="row">
+                            <div class="col-sm-12 profile-image text-center">
+                                <img id="profile_image"  src="${pageContext.request.contextPath}${user.avatar}" alt="avatar">
+
+                            </div>
+                        </div>
+
                         <h6>Upload a different photo...</h6>
 
                         <input type="file" name="file"  onchange="readURL(this)" class="form-control">

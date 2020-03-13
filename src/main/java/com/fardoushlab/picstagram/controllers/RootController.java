@@ -1,6 +1,7 @@
 package com.fardoushlab.picstagram.controllers;
 
 import com.fardoushlab.picstagram.dtos.*;
+import com.fardoushlab.picstagram.exceptions.ResourceAlreadyExistException;
 import com.fardoushlab.picstagram.request_models.CommentRM;
 import com.fardoushlab.picstagram.request_models.UserRM;
 import com.fardoushlab.picstagram.services.PostService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -64,13 +66,10 @@ public class RootController {
         UserDto userDto = userService.getUserDtoByName(authentication.getName());
         UserDtoMinimal userDtoMinimal = new UserDtoMinimal();
         BeanUtils.copyProperties(userDto,userDtoMinimal);
-        //BeanUtils.copyProperties(userDto, userRM);
 
         List<PostDtoMinimal> pagedMinimalposts = postService.getPagedMinimalposts(userDto.getId(), pageId);
 
-
         List<UserSuggDto> userDtoList = userService.getNonFriendUserList(userDto.getId(),5);
-
 
         model.addAttribute("user",userDtoMinimal);
         model.addAttribute("post_list",pagedMinimalposts);
@@ -78,18 +77,22 @@ public class RootController {
         model.addAttribute("comment",new CommentRM());
         model.addAttribute("pageId",pageId);
 
-
         return "index";
     }
 
     @GetMapping("/login")
-    public String getLoginPage(Model model, @RequestParam(name="error",required = false) Boolean error){
+    public String getLoginPage(Model model, @RequestParam(name="error",required = false, defaultValue = "false") Boolean error){
+
+        if (error){
+            model.addAttribute("errMsg","Username or password not matched !");
+        }
         model.addAttribute("error",error);
         return "auth/login";
     }
 
     @GetMapping("/register")
-    public String getRegistrationPage(Model model, @RequestParam(name="error",required = false) Boolean error){
+    public String getRegistrationPage(Model model, @RequestParam(name="error",required = false, defaultValue = "false") Boolean error){
+
         model.addAttribute("user", new UserRM());
         model.addAttribute("error",error);
         return "auth/register";
@@ -97,14 +100,20 @@ public class RootController {
 
 
     @PostMapping("/register")
-    public String registerUser(Model model, @RequestParam(name="error",required = false) Boolean error, @ModelAttribute(name = "user") UserRM  user){
+    public String registerUser(Model model, @RequestParam(name="error",required = false) Boolean error,@Valid @ModelAttribute(name = "user") UserRM  user){
 
         System.out.println("reg User: "+user.toString());
+
+        if(userService.isUserAlreadyExists(user.getUsername())){
+
+            throw  new ResourceAlreadyExistException("Sorry, this username is not availabe");
+
+        }
 
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(user,userDto);
         userDto.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDto.setAvatar("defaultavatar.jpg");
+        userDto.setAvatar("/images/avatar/defaultavatar.jpg");
 
         long userId = userService.addUser(userDto);
 

@@ -49,9 +49,10 @@
                       <div class="form-group">
                           <label class="col-md-3 control-label"></label>
                           <div class="col-md-8">
-                              <input type="submit" class="btn btn-primary" value="Post"/>
+                              <input type="submit" class="btn btn-primary" value="Post" disabled/>
                               <span></span>
-                              <input type="reset" class="btn btn-default" value="Cancel"/>
+                              <a class="btn btn-warning" href="${pageContext.request.contextPath}/index">Cancel</a>
+                          </div>
                           </div>
                       </div>
 
@@ -63,5 +64,20 @@
     </div>
 </section>
 
+<script>
+
+    $(document).ready(
+        function(){
+            $('input:file').change(
+                function(){
+                    if ($(this).val()) {
+                        $('input:submit').attr('disabled',false);
+                        // or, as has been pointed out elsewhere:
+                        // $('input:submit').removeAttr('disabled');
+                    }
+                }
+            );
+        });
+</script>
 </body>
 </html>

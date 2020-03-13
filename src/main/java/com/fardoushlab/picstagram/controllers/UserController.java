@@ -2,6 +2,7 @@ package com.fardoushlab.picstagram.controllers;
 
 import com.fardoushlab.picstagram.dtos.UserDto;
 import com.fardoushlab.picstagram.dtos.UserSuggDto;
+import com.fardoushlab.picstagram.dtos.UsersStat;
 import com.fardoushlab.picstagram.request_models.CommentRM;
 import com.fardoushlab.picstagram.request_models.UserRM;
 import com.fardoushlab.picstagram.services.UserService;
@@ -31,13 +32,30 @@ public class UserController {
     ServletContext servletContext;
 
     @GetMapping("/user/profile")
-    public String getProfilepage(Model model, Authentication authentication){
+    public String getProfilepage(Model model, @RequestParam(name = "username", required = false)  String username,  Authentication authentication){
 
-         UserDto dto = userService.getUserDtoByName(authentication.getName());
+
+        // while username is not null, then showing profile of a post woner,
+        // other wise show logged in user profile
+        UserDto userDto = new UserDto();
+        if (username != null){
+
+            userDto = userService.getUserDtoByName(username);
+            model.addAttribute("mode","visitor");
+        }else{
+            userDto = userService.getUserDtoByName(authentication.getName());
+            model.addAttribute("mode","woner");
+        }
+
         UserRM userRM = new UserRM();
 
-        BeanUtils.copyProperties(dto,userRM);
+        UsersStat usersStat = userService.getUserStats(userDto.getId());
+
+        BeanUtils.copyProperties(userDto,userRM);
         model.addAttribute("user",userRM);
+        model.addAttribute("userStat",usersStat);
+
+
 
         return "user/profile";
     }
@@ -121,7 +139,6 @@ public class UserController {
     @GetMapping("/user/friendSuggestion")
     public  String showFriendSuggestion(Model model, @RequestParam(name = "pageId", required = false, defaultValue = "1") int pageId,
                                         @RequestParam(name = "requestType", required = false) String requestType, Authentication authentication){
-
 
         if (requestType != null){
             if (requestType.equals("prev")){

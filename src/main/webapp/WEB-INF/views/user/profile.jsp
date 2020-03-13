@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 
 
 <html>
@@ -33,26 +34,32 @@
 
                 <h1 class="profile-user-name">${user.username}</h1>
 
-                <a class="btn profile-edit-btn"  href="${pageContext.request.contextPath}/user/profile-edit">Edit Profile</a>
-
-                <button class="btn profile-settings-btn" aria-label="profile settings"><i class="fas fa-cog" aria-hidden="true"></i></button>
+                <c:if test="${mode == 'woner'}">
+                    <a class="btn profile-edit-btn" href="${pageContext.request.contextPath}/user/profile-edit">Edit Profile</a>
+                    <button class="btn profile-settings-btn" aria-label="profile settings"><i class="fas fa-cog" aria-hidden="true"></i></button>
+                </c:if>
 
             </div>
 
             <div class="profile-stats">
 
                 <ul>
-                    <li><span class="profile-stat-count">164</span> posts</li>
-                    <li><span class="profile-stat-count">188</span> followers</li>
-                    <li><span class="profile-stat-count">206</span> following</li>
+                    <li><span class="profile-stat-count">${userStat.totalPost}</span> posts</li>
+                    <li><span class="profile-stat-count">${userStat.totalFollower}</span> followers</li>
+                    <li><span class="profile-stat-count">${userStat.totalFollowing}</span> following</li>
                 </ul>
 
             </div>
 
             <div class="profile-bio">
 
-                <p><span class="profile-real-name">${user.fullName}</span></br>${user.bio}</p>
+                <p><span class="profile-real-name">${user.fullName}</span></p>
 
+                <c:if test="${mode == 'woner'}">
+                    <p><span class="profile-real-name"><i class="fa fa-mail-bulk"></i>${user.email}  <i class="fa fa-phone"></i> ${user.phone}</span> </p>
+
+                </c:if>
+                <p>${user.bio}</p>
             </div>
 
         </div>

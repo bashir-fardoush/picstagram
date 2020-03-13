@@ -11,9 +11,9 @@
 <html>
 <head>
     <title>Registration</title>
-    <link href="https://fonts.googleapis.com/css?family=Indie+Flower|Overpass+Mono" rel="stylesheet"/>
     <link rel="stylesheet"
           href="${pageContext.request.contextPath }/css/login.css">
+
 
 </head>
 <body>
@@ -21,15 +21,16 @@
 <div id="wrapper" style="height: 70%">
     <div class="main-content" style="height: 60%">
         <div class="header">
-            <img src="https://i.imgur.com/zqpwkLQ.png" />
+            <img src="${pageContext.request.contextPath}/images/picstagram_image.png " />
         </div>
         <form:form action="${pageContext.request.contextPath}/register"  modelAttribute="user" method="POST" >
             <div class="l-part">
-                <form:input  path="fullName" type="text"  placeholder="Full name" class="input-1" />
-                <form:input  path="username" type="text" placeholder="User name" class="input-1" />
-                <form:input  path="email"   type="email"  placeholder="Email address" class="input-1" />
-                <form:input  path="phone" type="tel" placeholder="Phone number" pattern="[0-9]{11}" class="input-1" />
-                <form:input  path="password" type="password"  placeholder="password" class="input-1" />
+                <form:input  path="fullName" type="text"  placeholder="Full name" class="input-1" required="true"/>
+                <form:input  path="email"   type="email"  placeholder="Email address" class="input-1"  required="true"/>
+                <form:input  path="phone" type="tel" placeholder="Phone number" pattern="[0-9]{11}" class="input-1" required="true"/>
+                <form:input id="username" path="username" type="text" placeholder="username"   class="input-1"   required="true"/>
+                <form:input  path="password" type="password"  placeholder="password" class="input-1" required="true" />
+
                 <input type="submit" value="Sign Up" class="btn btn-info" />
             </div>
         </form:form>

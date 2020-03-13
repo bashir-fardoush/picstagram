@@ -72,4 +72,12 @@ public class PostRestController {
 
         return new ResponseEntity<>(likeid, HttpStatus.OK);
     }
+
+
+    public ResponseEntity<?> deleteComment(long commentId){
+        postService.deleteComment(commentId);
+
+
+        return new ResponseEntity<>("Success",HttpStatus.OK);
+    }
 }

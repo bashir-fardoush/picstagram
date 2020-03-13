@@ -29,6 +29,8 @@ public class Comment implements Serializable {
     @Column(name = "comment_time", updatable = false, nullable = false)
     private LocalDateTime commentTime;
 
+    private boolean isDeleted;
+
     public Comment() {
     }
 
@@ -70,5 +72,13 @@ public class Comment implements Serializable {
 
     public void setCommentTime(LocalDateTime commentTime) {
         this.commentTime = commentTime;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

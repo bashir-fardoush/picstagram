@@ -1,12 +1,24 @@
 package com.fardoushlab.picstagram.request_models;
 
+import com.fardoushlab.picstagram.util.ValidationConstraints;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+
 public class UserRM {
+
+
     private long id;
     private String avatar;
     private String bio;
     private String fullName;
+
+    @Pattern(regexp = ValidationConstraints.EMAIL_PATTERN, message = "Enter valid email address")
     private String email;
+
+    @Pattern(regexp = ValidationConstraints.PASSWORD_PATTERN, message = "Enter valid password")
     private String password;
+
     private String username;
     private String phone;
 

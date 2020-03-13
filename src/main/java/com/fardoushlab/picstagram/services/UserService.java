@@ -3,6 +3,8 @@ package com.fardoushlab.picstagram.services;
 import com.fardoushlab.picstagram.config.persistancy.HibernateConfig;
 import com.fardoushlab.picstagram.dtos.UserDto;
 import com.fardoushlab.picstagram.dtos.UserSuggDto;
+import com.fardoushlab.picstagram.dtos.UsersStat;
+import com.fardoushlab.picstagram.models.Post;
 import com.fardoushlab.picstagram.models.User;
 import com.fardoushlab.picstagram.util.Util;
 import org.hibernate.HibernateException;
@@ -108,6 +110,36 @@ public class UserService implements UserDetailsService {
     }
 
 
+    public boolean isUserAlreadyExists(String userName){
+
+
+        var session = config.getSession();
+        var transaction = session.getTransaction();
+
+        if (!transaction.isActive()) {
+            transaction = session.beginTransaction();
+        }
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<User> countryCriteriaQuery = cb.createQuery(User.class);
+        Root<User> root = countryCriteriaQuery.from(User.class);
+
+        countryCriteriaQuery.where(cb.equal(root.get("username"), userName));
+        var query = session.createQuery(countryCriteriaQuery);
+
+        var userList = new ArrayList<User>();
+        try {
+            userList = (ArrayList<User>) query.getResultList();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+
+        return userList.size() > 0;
+
+    }
     public UserDto getUserDtoByName(String userName){
 
         var session = config.getSession();
@@ -357,5 +389,52 @@ public class UserService implements UserDetailsService {
 
 
         return nonfriendDtos;
+    }
+
+    public UsersStat getUserStats(long userId) {
+
+        var session = config.getSession();
+        var transaction = session.getTransaction();
+
+        if (!transaction.isActive()){
+            transaction = session.beginTransaction();
+        }
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<User> userCriteriaQuery = cb.createQuery(User.class);
+        Root<User> root = userCriteriaQuery.from(User.class);
+
+        userCriteriaQuery.where(cb.equal(root.get("id"), userId));
+        var query = session.createQuery(userCriteriaQuery);
+
+
+        CriteriaQuery<Long> postCQ = cb.createQuery(Long.class);
+        Root<Post> postRoot = postCQ.from(Post.class);
+        postCQ.select(cb.count(postRoot.get("id")));
+        postCQ.where(cb.equal(postRoot.get("user"),userId));
+        var postQuery = session.createQuery(postCQ);
+
+        User user = new User();
+        UsersStat usersStat =new UsersStat();
+        try{
+
+            user = query.getSingleResult();
+            List<Long> following = user.getFollowing();
+            List<Long> followedBy = user.getFollowedBy();
+            usersStat.setTotalFollowing(following.size());
+            usersStat.setTotalFollower(followedBy.size());
+
+            Long singleResult = postQuery.getSingleResult();
+
+            usersStat.setTotalPost(Math.toIntExact(singleResult));
+
+        }catch (HibernateException e){
+            e.printStackTrace();
+        }finally {
+            session.close();
+        }
+
+        return usersStat;
+
     }
 }
