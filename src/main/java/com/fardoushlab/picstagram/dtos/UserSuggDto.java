@@ -6,6 +6,7 @@ public class UserSuggDto implements Serializable {
 
     private long id;
     private String avatar;
+    private String username;
     private String bio;
     private String fullName;
     private String joinDate;
@@ -14,6 +15,14 @@ public class UserSuggDto implements Serializable {
 
     public UserSuggDto() {
 
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public long getId() {

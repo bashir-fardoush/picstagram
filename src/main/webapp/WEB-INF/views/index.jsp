@@ -1,50 +1,37 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: bashir
-  Date: 3/4/2020
-  Time: 11:15 AM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Picstagram</title>
 
     <link rel="stylesheet"
           href="${pageContext.request.contextPath }/css/bootstrap.min.css" type="text/css"/>
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath }/css/home.css" type="text/css"/>
+          href="${pageContext.request.contextPath }/css/mainstyle.css" type="text/css"/>
     <link href="https://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet">
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
     <script type="text/javascript"
-            src="${pageContext.request.contextPath }/js/bootstrap.min.js"></script>
-    <script type="text/javascript"
-            src="${pageContext.request.contextPath }/js/jquery.js"></script>
-
-
+            src="${pageContext.request.contextPath }/js/jquery.min.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Picstagram</a>
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
-            aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-
-        <form class="form-inline my-2 my-lg-0 align-self-center">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search">
+    <div class="container">
+        <a class="navbar-brand" href="#">Picstagram</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
 
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0 float-right">
-
+        <ul class="nav navbar-nav navbar-right">
+            <%--<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>--%>
             <li class="nav-item active">
                 <a class="nav-link" href="#">
                     <svg aria-label="Home" fill="#262626" height="22" viewBox="0 0 48 48" width="22">
@@ -64,161 +51,166 @@
             <li class="nav-item">
                 <a class="nav-link" href="${pageContext.request.contextPath}/user/profile"><img alt="profile picture"
                                                                                                 src="${pageContext.request.contextPath}${user.avatar}"
-                                                                                                width="30px"
-                                                                                                height="30px"></a>
+                                                                                                width="30px" height="30px"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <svg aria-label="Find People" fill="#262626" height="22" viewBox="0 0 48 48" width="22">
-                        <path clip-rule="evenodd"
-                              d="M24 .5C37 .5 47.5 11 47.5 24S37 47.5 24 47.5.5 37 .5 24 11 .5 24 .5zm0 44c11.3 0 20.5-9.2 20.5-20.5S35.3 3.5 24 3.5 3.5 12.7 3.5 24 12.7 44.5 24 44.5zm-4.4-23.7c.3-.5.7-.9 1.2-1.2l14.8-8.1c.3-.1.6-.1.8.1.2.2.3.5.1.8l-8.1 14.8c-.3.5-.7.9-1.2 1.2l-14.8 8.1c-.3.1-.6.1-.8-.1-.2-.2-.3-.5-.1-.8l8.1-14.8zm6.2 5l4.3-7.8-7.8 4.3 3.5 3.5z"
-                              fill-rule="evenodd"></path>
-                    </svg>
+                <a class="nav-link" href="${pageContext.request.contextPath}/logout">Logout
+                    <i class="fa fa-sign-out-alt" style="font-size: 48px" ></i>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <svg aria-label="Activity Feed" fill="#262626" height="22" viewBox="0 0 48 48" width="22">
-                        <path clip-rule="evenodd"
-                              d="M34.3 3.5C27.2 3.5 24 8.8 24 8.8s-3.2-5.3-10.3-5.3C6.4 3.5.5 9.9.5 17.8s6.1 12.4 12.2 17.8c9.2 8.2 9.8 8.9 11.3 8.9s2.1-.7 11.3-8.9c6.2-5.5 12.2-10 12.2-17.8 0-7.9-5.9-14.3-13.2-14.3zm-1 29.8c-5.4 4.8-8.3 7.5-9.3 8.1-1-.7-4.6-3.9-9.3-8.1-5.5-4.9-11.2-9-11.2-15.6 0-6.2 4.6-11.3 10.2-11.3 4.1 0 6.3 2 7.9 4.2 3.6 5.1 1.2 5.1 4.8 0 1.6-2.2 3.8-4.2 7.9-4.2 5.6 0 10.2 5.1 10.2 11.3 0 6.7-5.7 10.8-11.2 15.6z"
-                              fill-rule="evenodd"></path>
-                    </svg>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/logout">
-                   <i class="fa fa-sign-out-alt"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                   <i class="fa fa-sign">
-                        <security:authentication property="principal.username" />
-                   </i>
+                    <i class="fa fa-sign">
+                        <security:authentication property="principal.username"/>
+                    </i>
                 </a>
             </li>
         </ul>
-
-        <div class="dropdown ">
-            <button class="btn btn-outline-secondary dropdown-toggle ml-3"
-                    type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                <sec:authorize access="isAuthenticated()">
-                    <sec:authentication property="principal.username" />
-                </sec:authorize>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <%--                    <a class="dropdown-item"--%>
-                <%--                       href="${pageContext.request.contextPath}/edit_profile">Edit Profile</a>--%>
-                <a class="dropdown-item"
-                   href="${pageContext.request.contextPath}/logout">Logout</a>
-            </div>
-        </div>
     </div>
 </nav>
-
 <section class="hero">
-    <div class="container-fluid">
-
+    <div class="container">
         <div class="row">
-            <div class="col-lg-3">
-                <a  class="btn btn-default btn-circle btn-md btn-lateral float-left align-bottom" href="${pageContext.request.contextPath}/index?pageId=${pageId}&requestType=prev"><i class="fa fa-angle-left"></i></a>
+            <div class="col-lg-6 offset-lg-2">
 
-            </div>
-            <%--post section--%>
-            <div class="col-lg-6">
                 <c:forEach items="${post_list }" var="posts">
                     <div class="row">
-                        <div>
-                            <div class="cardbox shadow-lg bg-white">
-                                <div class="cardbox-heading">
-                                    <!-- START dropdown-->
-                                    <div class="dropdown float-right">
-                                        <button class="btn btn-flat btn-flat-icon" type="button" data-toggle="dropdown"
-                                                aria-expanded="false">
-                                            <em class="fa fa-ellipsis-h"></em>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-scale dropdown-menu-right" role="menu"
-                                             style="position: absolute; transform: translate3d(-136px, 28px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                            <a class="dropdown-item" href="#">Hide post</a>
-                                            <a class="dropdown-item" href="#">Stop following</a>
-                                            <a class="dropdown-item" href="#">Report</a>
+                        <div class="col-sm-12">
+                            <div class="card card-primary">
+                                <div class="cardbox card-body">
+                                    <div class="cardbox-heading">
+                                        <div class="dropdown float-right">
+                                            <button class="btn btn-flat btn-flat-icon" type="button"
+                                                    data-toggle="dropdown"
+                                                    aria-expanded="false">
+                                                <em class="fa fa-ellipsis-h"></em>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-scale dropdown-menu-right" role="menu"
+                                                 style="position: absolute; transform: translate3d(-136px, 28px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                <a class="dropdown-item" href="#">Hide post</a>
+                                                <a class="dropdown-item" href="#">Stop following</a>
+                                                <a class="dropdown-item" href="#">Report</a>
+                                            </div>
                                         </div>
-                                    </div><!--/ dropdown -->
-                                    <div class="media m-0">
-                                        <div class="d-flex mr-3">
-                                            <a href="${pageContext.request.contextPath}/user/profile?username=${posts.woner.username}">
-                                                <img class="img-fluid rounded-circle"
-                                                            src="${pageContext.request.contextPath }${posts.woner.avatar}"
-                                                            alt="User"></a>
+                                        <!--/ dropdown -->
+                                        <div class="media m-0">
+                                            <div class="d-flex mr-3">
+                                                <a href="${pageContext.request.contextPath}/user/profile?username=${posts.woner.username}">
+                                                    <img class="img-fluid rounded-circle"
+                                                         src="${pageContext.request.contextPath }${posts.woner.avatar}"
+                                                         alt="User">
+                                                </a>
+                                            </div>
+                                            <div class="media-body">
+                                                <p class="m-0">${posts.woner.fullName}</p>
+                                                <small><span><i class="icon ion-md-pin"></i> Dhaka, Bangladesh</span>
+                                                </small>
+                                                <small><span><i class="icon ion-md-time"></i> 10 hours ago</span>
+                                                </small>
+                                            </div>
                                         </div>
-                                        <div class="media-body">
-                                            <p class="m-0">${posts.woner.fullName}</p>
-                                            <small><span><i class="icon ion-md-pin"></i> Dhaka, Banagladesh</span>
-                                            </small>
-                                            <small><span><i class="icon ion-md-time"></i> 10 min ago</span></small>
-                                        </div>
-                                    </div><!--/ media -->
-                                </div><!--/ cardbox-heading -->
-                                <div class="cardbox-item ml-3">
-                                    </hr>
-                                    <h3>${posts.postText}</h3>
-                                    </hr>
+                                        <!--/ media -->
+                                    </div>
+                                    <!--/ cardbox-heading -->
+                                        <%--POST TEXT--%>
+                                    <div class="cardbox-item ml-3">
+                                        </hr>
+                                        <h3>${posts.postText}</h3>
+                                        </hr>
 
-                                </div>
+                                    </div>
 
-                                <div class="cardbox-item">
-                                    <ul class="gallery_box">
-                                        <c:forEach items="${posts.postImages}" var="postImage">
-                                            <li>
-                                                <a href="#0"><img src="${pageContext.request.contextPath }${postImage}">
-                                                    <div class="box_data">
-                                                        <span>Caption</span>
-                                                    </div></a>
+                                    <div class="cardbox-item">
+                                        <div class="row">
+
+                                            <c:set var="count" value="0" scope="page" />
+                                            <c:forEach items="${posts.postImages}" var="postImage">
+                                                <c:set var="count" value="${count + 1}" scope="page"/>
+                                            </c:forEach>
+                                            <c:if test="${count > 1}">
+                                                <c:forEach items="${posts.postImages}" var="postImage">
+                                                    <div class="col-md-6 post-items">
+                                                        <img class="img-fluid"
+                                                             src="${pageContext.request.contextPath }${postImage}"
+                                                             alt="Image">
+                                                    </div>
+                                                </c:forEach>
+                                            </c:if>
+                                            <c:if test="${count == 1}">
+                                                <c:forEach items="${posts.postImages}" var="postImage">
+                                                <div class="col-md-12 post-items">
+                                                    <img class="img-fluid"
+                                                         src="${pageContext.request.contextPath }${postImage}"
+                                                         alt="Image">
+                                                </div>
+                                                </c:forEach>
+
+                                            </c:if>
+
+
+
+                                        </div>
+
+                                    </div>
+                                    <!--/ cardbox-item -->
+                                    <div class="cardbox-base">
+                                        <c:set var="colorAttr" value="#8d8d8d"/>
+                                        <c:if test="${posts.isLiked}">
+                                            <c:set var="colorAttr" value="#44d0b0"/>
+                                        </c:if>
+
+                                        <ul class="float-right">
+                                            <li><a><i class="fa fa-comments"></i></a></li>
+                                            <li><a><em class="mr-5"
+                                                       id="comment_count_${posts.id}">${posts.totalComment}</em></a>
                                             </li>
-                                        </c:forEach>
-                                    </ul>
+                                            <li><a><i class="fa fa-share"></i></a></li>
+                                            <li><a><em class="mr-3">03</em></a></li>
+                                        </ul>
+                                        <ul>
+                                            <li>
+                                                <a>
+                                                    <i onclick="addLike(${posts.id},${user.id},this)"
+                                                       class="fa fa-thumbs-up"
+                                                       style="color: ${colorAttr}">
 
-                                </div><!--/ cardbox-item -->
-                                <div class="cardbox-base">
-                                    <c:set var="colorAttr" value="#8d8d8d"/>
-                                    <c:if test="${posts.isLiked}">
-                                        <c:set var="colorAttr" value="#44d0b0"/>
-                                    </c:if>
+                                                    </i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a>
+                                                    <em class="mr-5" id="like_count_${posts.id}">${posts.totalLike}</em>
+                                                    Likes
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <!--/ cardbox-base -->
+                                    <div class="cardbox-comments">
+                            <span class="comment-avatar float-left">
+                               <a href="#">
+                                   <img class="rounded-circle" src="${pageContext.request.contextPath}${user.avatar}"
+                                        alt="...">
+                               </a>
+                             </span>
+                                        <div class="search">
+                                            <input id="comment_${posts.id}" placeholder="Write a comment" type="text">
+                                            <button onclick="addComment(${posts.id},${user.id})">
+                                                <span><i class="fa fa-paper-plane"></i></span>
+                                            </button>
+                                        </div>
+                                    </div>
 
-                                    <ul class="float-right">
-                                        <li><a><i class="fa fa-comments"></i></a></li>
-                                        <li><a><em class="mr-5" id="comment_count_${posts.id}">${posts.totalComment}</em></a></li>
-                                        <li><a><i class="fa fa-share-alt"></i></a></li>
-                                        <li><a><em class="mr-3">03</em></a></li>
-                                    </ul>
-                                    <ul>
-                                        <li><a>
-                                            <i onclick="addLike(${posts.id},${user.id},this)" class="fa fa-thumbs-up"
-                                               style="color: ${colorAttr}"></i></a></li>
-                                        <li><a><em class="mr-5" id="like_count_${posts.id}">${posts.totalLike}</em> Likes</a></li>
-                                        <%--<li><a><span id="like_count_${posts.id}">${posts.totalLike}</span> Likes</a></li>--%>
-                                    </ul>
-                                </div><!--/ cardbox-base -->
-                                <div class="cardbox-comments">
-			                      <span class="comment-avatar float-left">
-                                      <a href=""><img class="rounded-circle"  src="${pageContext.request.contextPath}${user.avatar}" alt="..."></a>
-                                  </span>
-                                    <div class="search">
-                                        <input id="comment_${posts.id}" placeholder="Write a comment" type="text">
-                                        <button onclick="addComment(${posts.id},${user.id})"><i class="fa fa-paper-plane"></i>
-                                        </button>
-                                    </div><!--/. Search -->
-
-                                        <%--show comment list--%>
+                                        <%--comment listing--%>
                                     <div class="text-left" id="comments_${posts.id}">
                                         <c:forEach items="${posts.comments}" var="comment">
                                             <div class="media m-0">
                                                 <div class="d-flex mr-3">
-                                                    <a href=""><img class="img-fluid rounded-circle"
-                                                                    src="${pageContext.request.contextPath }${comment.woner.avatar}"
-                                                                    alt="User"></a>
+                                                    <a href="">
+                                                        <img class="img-fluid rounded-circle"
+                                                             src="${pageContext.request.contextPath }${comment.woner.avatar}"
+                                                             alt="User">
+                                                    </a>
                                                 </div>
                                                 <div class="media-body">
                                                     <p class="m-0">${comment.commentText}</p>
@@ -230,30 +222,35 @@
                                         </c:forEach>
                                     </div>
 
+                                </div>
+                            </div>
 
-                                </div><!--/ cardbox-like -->
-
-                            </div><!--/ cardbox -->
-
-                        </div><!--/ col-lg-6 -->
+                        </div>
                     </div>
-                    <!--/ row -->
+                    </br>
                 </c:forEach>
+
             </div>
-                <%--END post section--%>
+            <%--END of Posts--%>
 
+            <%--seggestion section--%>
+            <div class="col-lg-4">
+                <div class="card card-primary">
+                    <div class="card-title p-1">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <span>Suggestions for you</span>
+                            </div>
+                            <div class="col-md-4">
+                                <span><a
+                                        href="${pageContext.request.contextPath}/user/friendSuggestion">See All</a></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <c:forEach items="${user_list }" var="userFriend">
 
-            <div class="col-lg-3 col-sm-12">
-
-                <div class="cardbox shadow-lg bg-white">
-
-                    <h4>Friend suggestion for you <a href="${pageContext.request.contextPath}/user/friendSuggestion"> See more >></a></h4>
-
-                    <c:forEach items="${user_list }" var="userFriend">
-                        <div class="row" id="suggestion_${userFriend.id}">
-                            <div class="col-sm-12 cardbox-heading ml-1" >
-                                <a class="btn btn-success float-right" onclick="followFriend(${user.id}, ${userFriend.id})"><i class="fa fa-user-plus"></i></a>
-
+                            <div  id="suggestion_${userFriend.id}">
                                 <div class="media m-0">
                                     <div class="d-flex mr-3">
                                         <a href=""><img class="img-fluid rounded-circle"
@@ -261,32 +258,46 @@
                                                         alt="User"></a>
                                     </div>
                                     <div class="media-body">
-                                        <p class="m-0">${userFriend.fullName}</p>
-                                        <small><span><i
-                                                class="icon ion-md-time"></i> ${userFriend.followedBy} Follower</span>
-                                        </small>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <a href="${pageContext.request.contextPath}/user/profile?username=${userFriend.username}" class="m-0">${userFriend.fullName}</a></br>
+                                                <small><span><i class="icon ion-md-time"></i>  ${userFriend.followedBy} Follower</span>
+                                                </small>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <a onclick="followFriend(${user.id}, ${userFriend.id})">Follow</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </c:forEach>
+                    </div>
 
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <a  class="btn btn-default btn-circle btn-md btn-lateral float-left"
+                            href="${pageContext.request.contextPath}/index?pageId=${pageId}&requestType=prev">
+                            <i class="fa fa-angle-left"></i> Prev
+                        </a>
 
-                    </c:forEach>
+                        <a  class="btn btn-default btn-circle btn-md btn-lateral float-right align-bottom"
+                            href="${pageContext.request.contextPath}/index?pageId=${pageId}&requestType=next">
+                            Next <i class="fa fa-angle-right"></i>
+                        </a>
+                    </div>
                 </div>
 
-                <%--onclick="loadPagedContent(${"pageId"},'next')"--%>
-                <a  class="btn btn-default btn-circle btn-md btn-lateral float-right align-bottom" href="${pageContext.request.contextPath}/index?pageId=${pageId}&requestType=next"><i class="fa fa-angle-right"></i></a>
 
             </div>
-
+            <!--/ row -->
         </div>
-
-
-
-    </div><!--/ container -->
+    </div>
+    <!--/ container -->
 </section>
 <script>
-
     function followFriend(userId, friendId) {
         console.log(userId);
         console.log(friendId);
@@ -312,7 +323,6 @@
 
 
     }
-
     function addLike(postId, userId, element) {
 
         var url = "${pageContext.request.contextPath}/api/v1/post/like";
@@ -348,8 +358,6 @@
         });
 
     }
-
-
     function addComment(postId, userId) {
 
         var commentText = $('#comment_' + postId).val();
@@ -400,13 +408,6 @@
 
 
     }
-
-
 </script>
 </body>
 </html>
-
-
-<%--
-image group
-https://bootsnipp.com/snippets/4Myjm--%>

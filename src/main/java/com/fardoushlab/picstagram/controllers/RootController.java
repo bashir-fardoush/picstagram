@@ -40,6 +40,7 @@ public class RootController {
     public String getDefaultPage(Model model){
 
         return "redirect:/index";
+
     }
 
     @GetMapping("/index")
@@ -69,7 +70,7 @@ public class RootController {
 
         List<PostDtoMinimal> pagedMinimalposts = postService.getPagedMinimalposts(userDto.getId(), pageId);
 
-        List<UserSuggDto> userDtoList = userService.getNonFriendUserList(userDto.getId(),5);
+        List<UserSuggDto> userDtoList = userService.getNonFriendUserList(userDto.getId(),20);
 
         model.addAttribute("user",userDtoMinimal);
         model.addAttribute("post_list",pagedMinimalposts);
@@ -78,6 +79,7 @@ public class RootController {
         model.addAttribute("pageId",pageId);
 
         return "index";
+
     }
 
     @GetMapping("/login")
